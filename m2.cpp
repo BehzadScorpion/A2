@@ -26,7 +26,7 @@
 typedef struct 
 {
 	char* url;
-	struct StackNode* next;
+	StackNode* next;
 }StackNode;
 
 typedef struct
@@ -87,7 +87,8 @@ StackNode* createStackNode(void)
 //
 // FUNCTION :  push
 // DESCRIPTION :
-//	Adds a new url to the stack.
+//	Adds a new url to the Stack, and updates the top field of
+//	the Stack accordingly.
 // PARAMETERS :
 //	Stack* stack : stack object representing the stack 
 //	the url is to be added to.
@@ -104,8 +105,17 @@ void push(Stack* stack, char* newUrl)
 	}
 	else
 	{
-		newNode->url = newUrl;
-		stack->top = newNode;
+		if (isEmpty(stack))
+		{
+			newNode->url = newUrl;
+			stack->top = newNode;
+		}
+		else
+		{
+			StackNode* top = stack->top;
+			newNode->url = newUrl;
+			top->next = newNode;
+			stack->top = newNode;
+		}	
 	}
-
 }
