@@ -119,3 +119,9 @@ void push(Stack* stack, char* newUrl)
 		}	
 	}
 }
+
+
+char* pop(Stack* stack)//removes and returns top stack url
+{
+
+}
