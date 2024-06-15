@@ -17,16 +17,20 @@
 #include<malloc.h>
 #include<stdbool.h>
 #include<stdlib.h>
+#include<string.h>
+#pragma warning (disable: 4996) 
 
 //RETURN CODES
 #define SUCCESS 0
 #define FAILURE -1
+#define MEMORY_ALLOCATION_ERROR -2
 
 //STRUCTS
-typedef struct 
+//Stack Structs:
+typedef struct StackNode
 {
 	char* url;
-	StackNode* next;
+	struct StackNode* next;
 }StackNode;
 
 typedef struct
@@ -34,25 +38,57 @@ typedef struct
 	StackNode* top;
 }Stack;
 
+//Queue Structs:
+typedef struct QueueNode
+{
+	char* url;
+	struct QueueNode* next;
+} QueueNode;
+
+typedef struct
+{
+	struct QueueNode* front;
+	struct QueueNode* rear;
+}Queue;
+
+
 //PROTOTYPES
+//Stack functions:
 void push(Stack* stack, char* newUrl); //add url to stack
 char* pop(Stack* stack); //removes and returns top stack url
 char* peek(Stack* stack); // return url from top of stack
 bool isEmpty(Stack* stack); //check if stack is empty
 StackNode* createStackNode(void); //creates new StackNode object
+//Queue functions:
+
 
 //MAIN
 int main(void)
 {
-	Stack* newStack = (Stack*)malloc(sizeof(Stack));
+	Stack* stack = (Stack*)malloc(sizeof(Stack));
+	if (stack == NULL)
+	{
+		printf("Memory allocation failure for Stack* stack");
+		return  MEMORY_ALLOCATION_ERROR;
+	}
+	stack->top = NULL;
 
+	pop(stack);
+	push(stack, (char*)"your mom");
+	push(stack, (char*)"your dad");
+	push(stack, (char*)"your sister");
+	printf("%s\n", peek(stack));
+	printf("%s\n", pop(stack));
+	printf("%s\n", pop(stack));
+	printf("%s\n", peek(stack));
+	pop(stack);
 
-	return	SUCCESS;
+	return SUCCESS;
 }//MAIN END
 
 
 //
-// FUNCTION :  createStackNode
+// FUNCTION : createStackNode
 // DESCRIPTION :
 //	Creates a new StackNode object.
 // PARAMETERS :
@@ -69,29 +105,20 @@ StackNode* createStackNode(void)
 		return NULL;
 	}
 
-	char* url = (char*)malloc(sizeof(char*));
-	if (url == NULL)
-	{//exception
-		printf("Memory allocation failure for char* url");
-		free(node);
-		return NULL;
-	}
-
 	node->next = NULL;
-	node->url = url;
+	node->url = NULL;
 
 	return node;
 }
 
 
 //
-// FUNCTION :  push
+// FUNCTION : push
 // DESCRIPTION :
 //	Adds a new url to the Stack, and updates the top field of
 //	the Stack accordingly.
 // PARAMETERS :
-//	Stack* stack : stack object representing the stack 
-//	the url is to be added to.
+//	Stack* stack : stack object the url is to be added to.
 //  char* newUrl: new url to be added to the stack.
 // RETURNS :
 //	void: This function returns nothing.
@@ -100,28 +127,120 @@ void push(Stack* stack, char* newUrl)
 {
 	StackNode* newNode = createStackNode();
 	if (newNode == NULL)
-	{
-		printf("error creating new node");
+	{//exception
+		printf("error creating new node\n");
 	}
 	else
 	{
+		//Memory allocation for node url
+		newNode->url = (char*)malloc(strlen(newUrl) + 1);
+		if (newNode->url == NULL)
+		{//exception
+			printf("Memory allocation failure for newNode->url\n");
+			free(newNode);
+		}
+		strcpy(newNode->url, newUrl);
+
 		if (isEmpty(stack))
 		{
-			newNode->url = newUrl;
 			stack->top = newNode;
 		}
 		else
 		{
 			StackNode* top = stack->top;
-			newNode->url = newUrl;
-			top->next = newNode;
+			newNode->next = top;
 			stack->top = newNode;
 		}	
 	}
 }
 
 
+//
+// FUNCTION : pop
+// DESCRIPTION :
+//	Removes the top url from the stack and returns the new top stack url.
+// PARAMETERS :
+//	Stack* stack : stack object the the url is being removed from.
+// RETURNS :
+//	char*: Memory address to the new top stack url.
+//
 char* pop(Stack* stack)//removes and returns top stack url
 {
+	if (isEmpty(stack))
+	{//exception
+		printf("error: the stack is empty\n");
+		return NULL;
+	}
 
+	StackNode* top = stack->top;
+	char* url = (char*)malloc(strlen(top->url) + 1);
+	if (url == NULL)
+	{//exception
+		printf("Memory allocation failure for url\n");
+		return NULL;
+	}
+	strcpy(url, top->url);
+
+	if (top->next == NULL)
+	{
+		stack->top = NULL;
+	}
+	else
+	{
+		StackNode* newTop = top->next;
+		stack->top = newTop;
+	}
+
+	free(top->url);
+	free(top);
+
+	return url;
+}
+
+
+//
+// FUNCTION : peek
+// DESCRIPTION :
+//	Returns the url from the top of the stack.
+// PARAMETERS :
+//	Stack* stack : stack object that the url is 
+//	being peeked from.
+// RETURNS :
+//	char*: Memory address to the top stack url.
+//
+char* peek(Stack* stack)
+{
+	if (isEmpty(stack))
+	{
+		printf("error: stack is empty.\n");
+		return NULL;
+	}
+	else
+	{
+		StackNode* top = stack->top;
+		return top->url;
+	}	
+}
+
+
+//
+// FUNCTION : isEmpty
+// DESCRIPTION :
+//	Checks if stack is empty and returns an appropriate.
+//	boolean value.
+// PARAMETERS :
+//	Stack* stack : stack object being analyzed.
+// RETURNS :
+//	bool: Memory address to the top stack url.
+//
+bool isEmpty(Stack* stack)
+{
+	if (stack->top == NULL)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }
