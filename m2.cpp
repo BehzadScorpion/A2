@@ -60,6 +60,10 @@ char* peek(Stack* stack); // return url from top of stack
 bool isEmpty(Stack* stack); //check if stack is empty
 StackNode* createStackNode(void); //creates new StackNode object
 //Queue functions:
+void enqueue(Queue* queue, char* newUrl); //adds url to rear of the queue
+char* dequeue(Queue* queue); //removes and returns url from front of the queu
+char* peek(Queue* queue); //Returns the URL from the front of the queu without removing it.
+bool isEmpty(Queue* queue); //Checks if the queue is empty
 
 
 //MAIN
