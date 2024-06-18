@@ -137,7 +137,7 @@ int main(void)
 						{
 							strcpy(url, pop(stack));
 							enqueue(queue, url);
-							printf("Previous Page: %s", url);
+							printf("Previous Page: %s\n\n", url);
 						}
 						break;
 						
@@ -150,7 +150,7 @@ int main(void)
 						{
 							strcpy(url, dequeue(queue));
 							push(stack, url);
-							printf("Next Page: %s", url);
+							printf("Next Page: %s\n\n", url);
 						}
 						break;
 
