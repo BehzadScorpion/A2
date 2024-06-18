@@ -61,9 +61,10 @@ bool isEmpty(Stack* stack); //check if stack is empty
 StackNode* createStackNode(void); //creates new StackNode object
 //Queue functions:
 void enqueue(Queue* queue, char* newUrl); //adds url to rear of the queue
-char* dequeue(Queue* queue); //removes and returns url from front of the queu
+char* dequeue(Queue* queue); //removes and returns url from front of the queue
 char* peek(Queue* queue); //Returns the URL from the front of the queu without removing it.
 bool isEmpty(Queue* queue); //Checks if the queue is empty
+QueueNode* createQueueNode(void); //creates new Queue Node object
 
 
 //MAIN
@@ -91,6 +92,7 @@ int main(void)
 }//MAIN END
 
 
+//STACK FUNCTIONS
 //
 // FUNCTION : createStackNode
 // DESCRIPTION :
@@ -125,14 +127,14 @@ StackNode* createStackNode(void)
 //	Stack* stack : stack object the url is to be added to.
 //  char* newUrl: new url to be added to the stack.
 // RETURNS :
-//	void: This function returns nothing.
+//	void: returns nothing.
 //
 void push(Stack* stack, char* newUrl)
 {
 	StackNode* newNode = createStackNode();
 	if (newNode == NULL)
 	{//exception
-		printf("error creating new node\n");
+		printf("error creating new StackNode\n");
 	}
 	else
 	{
@@ -143,18 +145,20 @@ void push(Stack* stack, char* newUrl)
 			printf("Memory allocation failure for newNode->url\n");
 			free(newNode);
 		}
-		strcpy(newNode->url, newUrl);
-
-		if (isEmpty(stack))
-		{
-			stack->top = newNode;
-		}
 		else
 		{
-			StackNode* top = stack->top;
-			newNode->next = top;
-			stack->top = newNode;
-		}	
+			strcpy(newNode->url, newUrl);
+			if (isEmpty(stack))
+			{
+				stack->top = newNode;
+			}
+			else
+			{
+				StackNode* top = stack->top;
+				newNode->next = top;
+				stack->top = newNode;
+			}
+		}
 	}
 }
 
@@ -248,3 +252,109 @@ bool isEmpty(Stack* stack)
 		return false;
 	}
 }
+
+
+//QUEUE FUNCTIONS
+//
+// FUNCTION : createQueueNode
+// DESCRIPTION :
+//	Creates a new QueueNode object with fields set to NULL.
+// PARAMETERS :
+//	void: no params.
+// RETURNS :
+//	void: returns nothing.
+//
+QueueNode* createQueueNode(void)
+{
+	QueueNode* node = (QueueNode*)malloc(sizeof(QueueNode));
+	if (node == NULL)
+	{//exception
+		printf("Memory allocation failure for QueueNode* node");
+		return NULL;
+	}
+
+	node->url = NULL;
+	node->next = NULL;
+
+	return node;
+}
+
+
+//
+// FUNCTION : enqueue
+// DESCRIPTION :
+//	Adds url to rear of the queue.
+// PARAMETERS :
+//	Queue* queue : Queue object the url is being addded to
+//  char* newUrl: new url being added to Queue.
+// RETURNS :
+//	void: returns nothing.
+//
+void enqueue(Queue* queue, char* newUrl)
+{
+	QueueNode* newNode = createQueueNode();
+	if (newNode == NULL)
+	{//exception
+		printf("error creating new QueueNode\n");
+	}
+	else
+	{
+		newNode->url = (char*)malloc(strlen(newUrl) + 1);
+		if (newNode->url == NULL)
+		{
+			printf("Memory allocation failure for newNode->url\n");
+			free(newNode);
+		}
+		else
+		{
+			strcpy(newNode->url, newUrl); //url copied to newNode
+			if (isEmpty(queue))
+			{
+				queue->front = newNode;
+				queue->rear = newNode;
+			}
+			else if (queue->front == queue->rear)
+			{
+				queue->front->next = newNode;
+				queue->rear = newNode;
+			}
+			else
+			{
+				queue->rear->next = newNode;
+				queue->rear = newNode;
+			}
+		}
+	}
+}
+
+
+//
+// FUNCTION : dequeue
+// DESCRIPTION :
+//	Removes and returns url from front of the queue.
+// PARAMETERS :
+//	Queue* queue : Queue object the url is being removed from
+// RETURNS :
+//	char*: the removed url pointer.
+//
+char* dequeue(Queue* queue)
+{
+	if (isEmpty(queue))
+	{
+
+	}
+
+}	//removes and returns url from front of the queue
+
+
+char* peek(Queue* queue)
+{
+}//Returns the URL from the front of the queu without removing it.
+
+
+bool isEmpty(Queue* queue)
+{
+	
+
+
+}//Checks if the queue is empty
