@@ -4,12 +4,12 @@
 * PROGRAMMER : Behzad Afrasiabi
 * FIRST VERSION : 2024-06-14
 * DESCRIPTION :
-*	This program uses stacks as url. 
-* 	  FILL LATER
-* 	  FILL LATER
-* 	  FILL LATER
-* 	  FILL LATER
-* 	  FILL LATER
+*  This program simulates web-based navigation using a stack and a queue.
+*  Each new web page visited is added to the stack for backward navigation.
+*  Pages popped from the stack are added to the queue for forward navigation.
+*  The program allows users to visit new pages, navigate backward and forward,
+*  display the current page, and view navigation history. It also provides an 
+*  option to exit the navigation simulation gracefully.
 */	 
 
 
