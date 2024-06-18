@@ -62,7 +62,7 @@ StackNode* createStackNode(void); //creates new StackNode object
 //Queue functions:
 void enqueue(Queue* queue, char* newUrl); //adds url to rear of the queue
 char* dequeue(Queue* queue); //removes and returns url from front of the queue
-char* peek(Queue* queue); //Returns the URL from the front of the queu without removing it.
+char* peek(Queue* queue); //Returns the url from the front of the queu without removing it.
 bool isEmpty(Queue* queue); //Checks if the queue is empty
 QueueNode* createQueueNode(void); //creates new Queue Node object
 
@@ -70,10 +70,35 @@ QueueNode* createQueueNode(void); //creates new Queue Node object
 //MAIN
 int main(void)
 {
-	Stack* stack = (Stack*)malloc(sizeof(Stack));
+	Queue* queue = (Queue*)malloc(sizeof(Queue));
+	if (queue == NULL)
+	{
+		printf("Memory allocation failure for Queue* queue\n");
+		return  MEMORY_ALLOCATION_ERROR;
+	}
+	queue->front = NULL;
+	queue->rear = NULL;
+
+	if (dequeue(queue) == NULL)
+	{
+		enqueue(queue, (char*)"ur mom");
+		enqueue(queue, (char*)"ur dad");
+		enqueue(queue, (char*)"ur sister");
+
+		printf("%s\n", peek(queue));
+		printf("%s\n", dequeue(queue));
+		printf("%s\n", dequeue(queue));
+		printf("%s\n", dequeue(queue));
+		dequeue(queue);
+		enqueue(queue, (char*)"ur sister");
+		printf("%s\n", peek(queue));
+	}
+
+
+	/*Stack* stack = (Stack*)malloc(sizeof(Stack));
 	if (stack == NULL)
 	{
-		printf("Memory allocation failure for Stack* stack");
+		printf("Memory allocation failure for Stack* stack\n");
 		return  MEMORY_ALLOCATION_ERROR;
 	}
 	stack->top = NULL;
@@ -86,7 +111,10 @@ int main(void)
 	printf("%s\n", pop(stack));
 	printf("%s\n", pop(stack));
 	printf("%s\n", peek(stack));
-	pop(stack);
+	pop(stack);*/
+
+
+
 
 	return SUCCESS;
 }//MAIN END
@@ -357,18 +385,17 @@ char* dequeue(Queue* queue)
 
 		if (queue->front == queue->rear)
 		{
+			free(front->url);
+			free(front);
 			queue->front = NULL;
-			free(queue->rear->url);
-			free(queue->rear);
 			queue->rear = NULL;
 		}
 		else
 		{
 			queue->front = front->next;
+			free(front->url);
+			free(front);
 		}
-
-		free(front->url);
-		free(front);
 
 		return url;
 	}
@@ -410,7 +437,7 @@ char* peek(Queue* queue)
 //
 bool isEmpty(Queue* queue)
 {
-	if (queue->front == NULL)
+	if (queue->front == NULL && queue->rear == NULL)
 	{
 		return true;
 	}
