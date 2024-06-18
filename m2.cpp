@@ -239,7 +239,7 @@ char* peek(Stack* stack)
 // PARAMETERS :
 //	Stack* stack : stack object being analyzed.
 // RETURNS :
-//	bool: Memory address to the top stack url.
+//	bool: true if stack is empty and false otherwise.
 //
 bool isEmpty(Stack* stack)
 {
@@ -340,21 +340,82 @@ void enqueue(Queue* queue, char* newUrl)
 char* dequeue(Queue* queue)
 {
 	if (isEmpty(queue))
-	{
-
+	{//exception
+		printf("error: the queue is empty\n");
+		return NULL;
 	}
+	else
+	{
+		QueueNode* front = queue->front;
+		char* url = (char*)malloc(strlen(front->url) + 1);
+		if (url == NULL)
+		{//exception
+			printf("Memory allocation failure for url\n");
+			return NULL;
+		}
+		strcpy(url, front->url);
 
-}	//removes and returns url from front of the queue
+		if (queue->front == queue->rear)
+		{
+			queue->front = NULL;
+			free(queue->rear->url);
+			free(queue->rear);
+			queue->rear = NULL;
+		}
+		else
+		{
+			queue->front = front->next;
+		}
+
+		free(front->url);
+		free(front);
+
+		return url;
+	}
+}	
 
 
+//
+// FUNCTION : peek
+// DESCRIPTION :
+//	Returns the url from the front of the queu without removing it.
+// PARAMETERS :
+//	Queue* queue : Queue object the url is being peeked from
+// RETURNS :
+//	char*: the peeked url pointer.
+//
 char* peek(Queue* queue)
 {
-}//Returns the URL from the front of the queu without removing it.
+	if(isEmpty(queue))
+	{//exception
+		printf("error: the queue is empty\n");
+		return NULL;
+	}
+	else
+	{
+		return queue->front->url;
+	}
+}
 
 
+//
+// FUNCTION : isEmpty
+// DESCRIPTION :
+//	Checks if queue is empty and returns an appropriate.
+//	boolean value.
+// PARAMETERS :
+//	Queue* queue : queue object being analyzed.
+// RETURNS :
+//	bool: true if queue is empty and false otherwise.
+//
 bool isEmpty(Queue* queue)
 {
-	
-
-
-}//Checks if the queue is empty
+	if (queue->front == NULL)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
