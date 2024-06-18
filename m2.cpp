@@ -24,6 +24,8 @@
 #define SUCCESS 0
 #define FAILURE -1
 #define MEMORY_ALLOCATION_ERROR -2
+#define CHOICE_INPUT_LIMIT 5
+#define URL_INPUT_LIMIT 30
 
 //STRUCTS
 //Stack Structs:
@@ -65,11 +67,15 @@ char* dequeue(Queue* queue); //removes and returns url from front of the queue
 char* peek(Queue* queue); //Returns the url from the front of the queu without removing it.
 bool isEmpty(Queue* queue); //Checks if the queue is empty
 QueueNode* createQueueNode(void); //creates new Queue Node object
+//Menu functions:
+void replaceNewLineCharacter(char text[]);
+void visitNewPage(Stack* stack, char* url); // adds a page to the stack and prints info appropriately
 
 
 //MAIN
 int main(void)
 {
+	//Queue init
 	Queue* queue = (Queue*)malloc(sizeof(Queue));
 	if (queue == NULL)
 	{
@@ -79,7 +85,63 @@ int main(void)
 	queue->front = NULL;
 	queue->rear = NULL;
 
-	if (dequeue(queue) == NULL)
+	//Stack init
+	Stack* stack = (Stack*)malloc(sizeof(Stack));
+	if (stack == NULL)
+	{
+		printf("Memory allocation failure for Stack* stack\n");
+		return  MEMORY_ALLOCATION_ERROR;
+	}
+	stack->top = NULL;
+
+	//Menu code
+	char input[CHOICE_INPUT_LIMIT] = { " " };
+	int choice = 0;
+
+	while (choice != 5)
+	{
+		printf("Menu:\n");
+		printf("1. Visit New Web Page\n");
+		printf("2. Navigate Backward\n");
+		printf("3. Navigate Forward\n");
+		printf("4. Display Current Page and History\n");
+		printf("5. Exit\n\n");
+		printf("Enter your choice: ");
+		if (fgets(input, CHOICE_INPUT_LIMIT, stdin) != NULL)
+		{
+			replaceNewLineCharacter(input);
+			if (sscanf(input, "%d", &choice) == 1)
+			{
+				switch (choice)
+				{
+					case 1: //Visit New Web Page
+						printf("Enter the URL of the web page: "); 
+						if (fgets(input, URL_INPUT_LIMIT, stdin) != NULL)
+						{
+							push(stack, input);
+						}
+						printf("\n");
+						break;
+
+					case 2: //Navigate Backward
+					default:
+						printf("Invalid choice entry. Please try again.\n");
+				}
+
+			}
+			else 
+			{
+				printf("Invalid choice entry. Please try again.\n");
+			}
+		}
+		else
+		{
+			printf("NULL input error. Please try again.\n");
+		}
+
+	}
+
+	/*if (dequeue(queue) == NULL)
 	{
 		enqueue(queue, (char*)"ur mom");
 		enqueue(queue, (char*)"ur dad");
@@ -92,18 +154,12 @@ int main(void)
 		dequeue(queue);
 		enqueue(queue, (char*)"ur sister");
 		printf("%s\n", peek(queue));
-	}
+	}*/
 
 
-	/*Stack* stack = (Stack*)malloc(sizeof(Stack));
-	if (stack == NULL)
-	{
-		printf("Memory allocation failure for Stack* stack\n");
-		return  MEMORY_ALLOCATION_ERROR;
-	}
-	stack->top = NULL;
+	
 
-	pop(stack);
+	/*pop(stack);
 	push(stack, (char*)"your mom");
 	push(stack, (char*)"your dad");
 	push(stack, (char*)"your sister");
@@ -118,6 +174,30 @@ int main(void)
 
 	return SUCCESS;
 }//MAIN END
+
+
+//MENU FUNCTIONS
+//
+// FUNCTION :  replaceNewLineCharacter
+// DESCRIPTION :
+//	This function takes in a C-style string and checks whether it ends with
+//	a new line character. If the new line character is found, it is replaced
+//  with a null terminator throgh derefrencing, so that the C-style strings 
+//  becomes usable in the program.
+// PARAMETERS :
+//	char text[] : The C-style string.
+// RETURNS :
+//	void: This function returns nothing.
+//
+void replaceNewLineCharacter(char text[])
+{
+	//removing new line character and replacing it with a null terminator
+	char* newLine = strchr(text, '\n');
+	if (newLine != NULL)
+	{
+		*newLine = '\0';
+	}
+}
 
 
 //STACK FUNCTIONS
