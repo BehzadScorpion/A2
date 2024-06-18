@@ -98,7 +98,7 @@ int main(void)
 	char input[CHOICE_INPUT_LIMIT] = { " " };
 	int choice = 0;
 
-	while (choice != 5)
+	while (choice != 5) //Menu loop
 	{
 		printf("Menu:\n");
 		printf("1. Visit New Web Page\n");
@@ -112,20 +112,114 @@ int main(void)
 			replaceNewLineCharacter(input);
 			if (sscanf(input, "%d", &choice) == 1)
 			{
+				char url[URL_INPUT_LIMIT] = { " " };
+				StackNode* currentStackNode = stack->top;
+				QueueNode* currentQueueNode = queue->front;
+				int i = 0;
 				switch (choice)
 				{
 					case 1: //Visit New Web Page
 						printf("Enter the URL of the web page: "); 
-						if (fgets(input, URL_INPUT_LIMIT, stdin) != NULL)
+						if (fgets(url, URL_INPUT_LIMIT, stdin) != NULL)
 						{
-							push(stack, input);
+							replaceNewLineCharacter(url);
+							push(stack, url);
 						}
 						printf("\n");
 						break;
 
 					case 2: //Navigate Backward
+						if (isEmpty(stack))
+						{
+							printf("No pages to display.\n");
+						}
+						else
+						{
+							strcpy(url, pop(stack));
+							enqueue(queue, url);
+							printf("Previous Page: %s", url);
+						}
+						break;
+						
+					case 3: //Navigate Forward
+						if (isEmpty(queue))
+						{
+							printf("No pages to display.\n");
+						}
+						else
+						{
+							strcpy(url, dequeue(queue));
+							push(stack, url);
+							printf("Next Page: %s", url);
+						}
+						break;
+
+					case 4: //Display Current Page and History
+						printf("Current Page: %s\n", peek(stack));
+						if (isEmpty(stack) || currentStackNode->next == NULL)
+						{
+							printf("Backward History:\n");
+							printf("No pages to display.\n");
+						}
+						else
+						{
+							//Backward History
+							printf("Backward History:\n");
+							while (currentStackNode->next != NULL)
+							{
+								i++;
+								printf("%d. %s\n", i, currentStackNode->url);
+								currentStackNode = currentStackNode->next;
+								if (currentStackNode->next == NULL)
+								{
+									i++;
+									printf("%d. %s\n", i, currentStackNode->url);
+								}
+							}
+						}
+
+						//Forward History
+						if (isEmpty(queue))
+						{
+							printf("Forward History:\n");
+							printf("No pages to display.\n");
+						}
+						else
+						{
+							printf("Forward History:\n");
+							QueueNode* currentQueueNode = queue->front;
+							i = 0;
+							while (currentQueueNode->next != NULL)
+							{
+								i++;
+								printf("%d. %s\n", i, currentQueueNode->url);
+								currentQueueNode = currentQueueNode->next;
+								if (currentQueueNode->next == NULL)
+								{
+									i++;
+									printf("%d. %s\n", i, currentQueueNode->url);
+								}
+							}
+						}
+						printf("\n");
+						break;
+
+					case 5: //Exit
+						while (!isEmpty(stack))
+						{
+							pop(stack);
+						}
+
+						while (!isEmpty(queue))
+						{
+							dequeue(queue);
+						}
+
+						return SUCCESS;
+
 					default:
 						printf("Invalid choice entry. Please try again.\n");
+						break;
 				}
 
 			}
@@ -139,37 +233,7 @@ int main(void)
 			printf("NULL input error. Please try again.\n");
 		}
 
-	}
-
-	/*if (dequeue(queue) == NULL)
-	{
-		enqueue(queue, (char*)"ur mom");
-		enqueue(queue, (char*)"ur dad");
-		enqueue(queue, (char*)"ur sister");
-
-		printf("%s\n", peek(queue));
-		printf("%s\n", dequeue(queue));
-		printf("%s\n", dequeue(queue));
-		printf("%s\n", dequeue(queue));
-		dequeue(queue);
-		enqueue(queue, (char*)"ur sister");
-		printf("%s\n", peek(queue));
-	}*/
-
-
-	
-
-	/*pop(stack);
-	push(stack, (char*)"your mom");
-	push(stack, (char*)"your dad");
-	push(stack, (char*)"your sister");
-	printf("%s\n", peek(stack));
-	printf("%s\n", pop(stack));
-	printf("%s\n", pop(stack));
-	printf("%s\n", peek(stack));
-	pop(stack);*/
-
-
+	}//Menu loop end
 
 
 	return SUCCESS;
